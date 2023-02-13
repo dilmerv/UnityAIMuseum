@@ -15,7 +15,7 @@ public class MuseumImageGenerator : Singleton<MuseumImageGenerator>
     [SerializeField]
     private ImageSize imageSize = ImageSize.Small;
 
-    public async void GenerateImage(string prompt, Transform transform, Action<GameObject> callBack = null)
+    public async void GenerateImage(string prompt, Transform transform, Action<Transform, Texture2D> callBack = null)
     {
         try
         {
@@ -25,8 +25,8 @@ public class MuseumImageGenerator : Singleton<MuseumImageGenerator>
             foreach (var result in results)
             {
                 Debug.Log(result.Key);
-                transform.GetComponent<Renderer>().material.SetTexture("_MainTex", result.Value);
-                callBack?.Invoke(transform.gameObject);
+                //transform.GetComponent<Renderer>().material.SetTexture("_MainTex", result.Value);
+                callBack?.Invoke(transform, result.Value);
             }
         }
         catch(Exception e)

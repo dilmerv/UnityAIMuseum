@@ -23,24 +23,30 @@ public class VoiceControllerWithPrompt : Singleton<VoiceControllerWithPrompt>
 
         appVoiceExperience.events.OnFullTranscription.AddListener((transcript) =>
         {
-            objectToActOnWithVoice.parent.GetComponentInChildren<Progress>()
-                .StartProgress("Generating AI Image");
+            var progress = objectToActOnWithVoice.parent?.GetComponentInChildren<Progress>();
+            if(progress != null)
+                progress.StartProgress("Generating AI Image");
 
-            MuseumImageGenerator.Instance.GenerateImage(transcript, objectToActOnWithVoice, (x) =>
+            MuseumImageGenerator.Instance.GenerateImage(transcript, objectToActOnWithVoice, (transform, texture) =>
             {
-                objectToActOnWithVoice.parent.GetComponentInChildren<Progress>()
-                .StopProgress();
+                var progress = objectToActOnWithVoice.parent?.GetComponentInChildren<Progress>();
+                if(progress != null)
+                    progress.StopProgress();
+
+                transform.GetComponent<Renderer>().material.SetTexture("_MainTex", texture);
             });
 
-            objectToActOnWithVoice.parent.GetComponentInChildren<Frame>()
-                .FramePrompt.text = transcript;
+            var frame = objectToActOnWithVoice.parent.GetComponentInChildren<Frame>();
+            if(frame != null)
+                frame.FramePrompt.text = transcript;
         });
 
         appVoiceExperience.events.onPartialTranscription.AddListener((transcript) =>
         {
             partialTranscriptText.text = transcript;
-            objectToActOnWithVoice.parent.GetComponentInChildren<Frame>()
-                .FramePrompt.text = transcript;
+            var frame = objectToActOnWithVoice.parent.GetComponentInChildren<Frame>();
+            if(frame != null)
+                frame.FramePrompt.text = transcript;
         });
 
         appVoiceExperience.events.OnRequestCreated.AddListener((request) =>
