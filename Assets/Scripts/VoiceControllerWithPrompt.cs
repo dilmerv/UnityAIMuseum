@@ -27,7 +27,7 @@ public class VoiceControllerWithPrompt : Singleton<VoiceControllerWithPrompt>
             if(progress != null)
                 progress.StartProgress("Generating AI Image");
 
-            MuseumImageGenerator.Instance.GenerateImage(transcript, objectToActOnWithVoice, (transform, texture) =>
+            ImageGenerator.Instance.GenerateImage(transcript, objectToActOnWithVoice, (transform, texture) =>
             {
                 var progress = objectToActOnWithVoice.parent?.GetComponentInChildren<Progress>();
                 if(progress != null)

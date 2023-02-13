@@ -5,7 +5,7 @@ using System;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class MuseumImageGenerator : Singleton<MuseumImageGenerator>
+public class ImageGenerator : Singleton<ImageGenerator>
 {
     [Header("Inputs")]
     [SerializeField]
@@ -25,7 +25,6 @@ public class MuseumImageGenerator : Singleton<MuseumImageGenerator>
             foreach (var result in results)
             {
                 Debug.Log(result.Key);
-                //transform.GetComponent<Renderer>().material.SetTexture("_MainTex", result.Value);
                 callBack?.Invoke(transform, result.Value);
             }
         }
