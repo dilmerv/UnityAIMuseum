@@ -42,7 +42,7 @@ public class Frame : MonoBehaviour
 
     private Material materialInstance;
 
-    private bool hasInteraction = false;
+    private bool hasInteraction;
 
     private XRRayInteractor activeInteractor;
 
@@ -84,12 +84,14 @@ public class Frame : MonoBehaviour
 
     private void Update()
     {
-        if (hasInteraction)
+        if (hasInteraction &&
+            // TODO ideally we should be checking if the trigger is pulled here not grab
+            // but I wasn't sure exactly how to filter for that.
+            activeInteractor.isSelectActive &&
+            activeInteractor.TryGetHitInfo(out var pointerPosition, out _, out _, out _))
         {
-            if (activeInteractor.TryGetHitInfo(out var pointerPosition, out _, out _, out _))
-            {
-                Debug.Log(pointerPosition);
-            }
+            // TODO send pointer position to the shader to draw new pixels in alpha channel
+            Debug.Log(pointerPosition);
         }
     }
 
