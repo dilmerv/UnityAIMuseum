@@ -51,6 +51,11 @@ public class ImageGenerator : Singleton<ImageGenerator>
         Logger.Instance.LogInfo(args.interactableObject.transform.name);
     }
 
+    public void OnFrameHoverExit(HoverExitEventArgs args)
+    {
+        Logger.Instance.LogInfo(args.interactableObject.transform.name);
+    }
+
     public void OnFrameSelected(SelectEnterEventArgs args)
     {
         Logger.Instance.LogInfo($"OnFrameSelected: {args.interactableObject.transform.name}");

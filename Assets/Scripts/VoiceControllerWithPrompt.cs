@@ -7,7 +7,6 @@ using UnityEngine;
 
 public class VoiceControllerWithPrompt : Singleton<VoiceControllerWithPrompt>
 {
-
     [Header("Voice")]
     [SerializeField]
     private AppVoiceExperience appVoiceExperience;

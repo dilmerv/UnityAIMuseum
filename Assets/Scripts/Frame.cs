@@ -1,6 +1,7 @@
 using OpenAI.Images;
 using TMPro;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class Frame : MonoBehaviour
 {
@@ -36,7 +37,14 @@ public class Frame : MonoBehaviour
         set => framePrompt = value;
     }
 
+    [SerializeField]
+    private XRSimpleInteractable interactable;
+
     private Material materialInstance;
+
+    private bool hasInteraction = false;
+
+    private XRRayInteractor activeInteractor;
 
     private void OnValidate()
     {
@@ -54,6 +62,11 @@ public class Frame : MonoBehaviour
         {
             imageRenderer = GetComponentInChildren<Renderer>();
         }
+
+        if (interactable == null)
+        {
+            interactable = GetComponentInChildren<XRSimpleInteractable>();
+        }
     }
 
     private void Awake()
@@ -61,6 +74,19 @@ public class Frame : MonoBehaviour
         framePrompt.text = string.Empty;
         frameProgress.text = string.Empty;
         materialInstance = imageRenderer.material;
+        interactable.hoverEntered.AddListener(OnHoverEntered);
+        interactable.hoverExited.AddListener(OnHoverExit);
+    }
+
+    private void Update()
+    {
+        if (hasInteraction)
+        {
+            if (activeInteractor.TryGetHitInfo(out var pointerPosition, out _, out _, out _))
+            {
+                Debug.Log(pointerPosition);
+            }
+        }
     }
 
     private void OnDestroy()
@@ -74,5 +100,24 @@ public class Frame : MonoBehaviour
     public void UpdateTexture(Texture2D texture)
     {
         materialInstance.SetTexture(mainTex, texture);
+    }
+
+    private void OnHoverEntered(HoverEnterEventArgs hoverEnteredArgs)
+    {
+        if (hoverEnteredArgs.interactorObject is XRRayInteractor rayInteractor)
+        {
+            activeInteractor = rayInteractor;
+            hasInteraction = true;
+        }
+    }
+
+    private void OnHoverExit(HoverExitEventArgs hoverExitArgs)
+    {
+        if (hoverExitArgs.interactorObject is XRRayInteractor rayInteractor &&
+            rayInteractor == activeInteractor)
+        {
+            hasInteraction = false;
+            activeInteractor = null;
+        }
     }
 }
