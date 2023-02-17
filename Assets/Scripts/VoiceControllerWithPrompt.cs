@@ -1,10 +1,14 @@
 using DilmerGames.Core.Singletons;
+using Meta.WitAi;
 using Oculus.Voice;
+using OpenAI.Images;
 using TMPro;
 using UnityEngine;
 
 public class VoiceControllerWithPrompt : Singleton<VoiceControllerWithPrompt>
 {
+    private static readonly int mainTex = Shader.PropertyToID("_MainTex");
+
     [Header("Voice")]
     [SerializeField]
     private AppVoiceExperience appVoiceExperience;
@@ -13,53 +17,68 @@ public class VoiceControllerWithPrompt : Singleton<VoiceControllerWithPrompt>
     [SerializeField]
     private TextMeshProUGUI partialTranscriptText;
 
-    private bool appVoiceActive;
-
     private Transform objectToActOnWithVoice;
 
     private void Awake()
     {
         partialTranscriptText.text = string.Empty;
 
-        appVoiceExperience.events.OnFullTranscription.AddListener((transcript) =>
+        appVoiceExperience.events.OnFullTranscription.AddListener(OnFullTranscription);
+        appVoiceExperience.events.onPartialTranscription.AddListener(OnPartialTranscription);
+        appVoiceExperience.events.OnRequestCreated.AddListener(OnRequestCreated);
+        appVoiceExperience.events.OnRequestCompleted.AddListener(OnRequestCompleted);
+    }
+
+    private void OnFullTranscription(string transcript)
+    {
+        var progress = objectToActOnWithVoice.parent.GetComponentInChildren<Progress>();
+
+        if (progress != null)
         {
-            var progress = objectToActOnWithVoice.parent?.GetComponentInChildren<Progress>();
-            if(progress != null)
-                progress.StartProgress("Generating AI Image");
+            progress.StartProgress("Generating AI Image");
+        }
 
-            ImageGenerator.Instance.GenerateImage(transcript, objectToActOnWithVoice, (transform, texture) =>
-            {
-                var progress = objectToActOnWithVoice.parent?.GetComponentInChildren<Progress>();
-                if(progress != null)
-                    progress.StopProgress();
+        ImageGenerator.Instance.GenerateImage(transcript, objectToActOnWithVoice, ImageSize.Small, OnImageGenerated);
 
-                transform.GetComponent<Renderer>().material.SetTexture("_MainTex", texture);
-            });
+        var frame = objectToActOnWithVoice.parent.GetComponentInChildren<Frame>();
 
-            var frame = objectToActOnWithVoice.parent.GetComponentInChildren<Frame>();
-            if(frame != null)
-                frame.FramePrompt.text = transcript;
-        });
-
-        appVoiceExperience.events.onPartialTranscription.AddListener((transcript) =>
+        if (frame != null)
         {
-            partialTranscriptText.text = transcript;
-            var frame = objectToActOnWithVoice.parent.GetComponentInChildren<Frame>();
-            if(frame != null)
-                frame.FramePrompt.text = transcript;
-        });
+            frame.FramePrompt.text = transcript;
+        }
+    }
 
-        appVoiceExperience.events.OnRequestCreated.AddListener((request) =>
-        {
-            appVoiceActive = true;
-            Logger.Instance.LogInfo("OnRequestCreated Activated");
-        });
+    private void OnImageGenerated(Transform transformTarget, Texture2D texture)
+    {
+        var progress = objectToActOnWithVoice.parent.GetComponentInChildren<Progress>();
 
-        appVoiceExperience.events.OnRequestCompleted.AddListener(() =>
+        if (progress != null)
         {
-            appVoiceActive = false;
-            Logger.Instance.LogInfo("OnRequestCompleted Deactivated");
-        });
+            progress.StopProgress();
+        }
+
+        transformTarget.GetComponent<Renderer>().material.SetTexture(mainTex, texture);
+    }
+
+    private void OnPartialTranscription(string transcript)
+    {
+        partialTranscriptText.text = transcript;
+        var frame = objectToActOnWithVoice.parent.GetComponentInChildren<Frame>();
+
+        if (frame != null)
+        {
+            frame.FramePrompt.text = transcript;
+        }
+    }
+
+    private void OnRequestCreated(WitRequest request)
+    {
+        Logger.Instance.LogInfo("OnRequestCreated Activated");
+    }
+
+    private void OnRequestCompleted()
+    {
+        Logger.Instance.LogInfo("OnRequestCompleted Deactivated");
     }
 
     public void ActivateVoice(Transform selectedTransform)
@@ -69,5 +88,3 @@ public class VoiceControllerWithPrompt : Singleton<VoiceControllerWithPrompt>
         appVoiceExperience.Activate();
     }
 }
-
-

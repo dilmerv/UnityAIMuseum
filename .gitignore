@@ -6,6 +6,7 @@
 Assets/AssetStoreTools*
 [Ll]ogs/*
 [Ss]erverData/*
+UserSettings/
 
 # IDE cache directories
 .vs/
@@ -43,3 +44,5 @@ Packages/com.kyrylokuzyk.arfoundationremote
 ARFoundationRemoteCompanionApp/
 
 ARFoundationRemoteInstaller
+_ReSharper.Caches
+

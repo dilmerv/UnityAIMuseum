@@ -6,19 +6,19 @@ public class Frame : MonoBehaviour
     [SerializeField]
     private TextMeshPro framePrompt;
 
+    public TextMeshPro FrameProgress
+    {
+        get => frameProgress;
+        set => frameProgress = value;
+    }
+
     [SerializeField]
     private TextMeshPro frameProgress;
 
-    public TextMeshPro FrameProgress
-    {
-        get { return frameProgress; }
-        set { frameProgress = value; }
-    }
-
     public TextMeshPro FramePrompt
     {
-        get { return framePrompt; }
-        set { framePrompt = value; }
+        get => framePrompt;
+        set => framePrompt = value;
     }
 
     private void Awake()

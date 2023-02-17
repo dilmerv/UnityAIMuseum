@@ -7,32 +7,45 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class ImageGenerator : Singleton<ImageGenerator>
 {
-    [Header("Inputs")]
-    [SerializeField]
-    [TextArea(5, 20)]
-    private string prompt;
+    private OpenAIClient openAI;
+    private OpenAIClient OpenAI => openAI ??= new OpenAIClient();
 
-    [SerializeField]
-    private ImageSize imageSize = ImageSize.Small;
-
-    public async void GenerateImage(string prompt, Transform transform, Action<Transform, Texture2D> callBack = null)
+    public async void GenerateImage(string prompt, Transform targetTransform, ImageSize imageSize = ImageSize.Small, Action<Transform, Texture2D> callBack = null)
     {
         try
         {
-            var api = new OpenAIClient();
-            var results = await api.ImagesEndPoint.GenerateImageAsync(prompt, 1, imageSize);
+            var results = await OpenAI.ImagesEndPoint.GenerateImageAsync(prompt, size: imageSize);
 
-            foreach (var result in results)
+            foreach (var (path, texture) in results)
             {
-                Debug.Log(result.Key);
-                callBack?.Invoke(transform, result.Value);
+                Debug.Log(path);
+                callBack?.Invoke(targetTransform, texture);
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            Debug.Log(e.ToString());
+            Debug.Log(e);
         }
     }
+
+    public async void GenerateImageEdit(string prompt, Transform targetTransform, Texture2D baseImage, Texture2D imageMask, ImageSize imageSize = ImageSize.Small, Action<Transform, Texture2D> callBack = null)
+    {
+        try
+        {
+            var results = await OpenAI.ImagesEndPoint.CreateImageEditAsync(baseImage, imageMask, prompt, size: imageSize);
+
+            foreach (var (path, texture) in results)
+            {
+                Debug.Log(path);
+                callBack?.Invoke(targetTransform, texture);
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
+    }
+
     public void OnFrameHovered(HoverEnterEventArgs args)
     {
         Logger.Instance.LogInfo(args.interactableObject.transform.name);

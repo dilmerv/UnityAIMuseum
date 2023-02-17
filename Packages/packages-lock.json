@@ -1,12 +1,12 @@
 {
   "dependencies": {
     "com.openai.unity": {
-      "version": "2.2.3",
+      "version": "2.2.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "3.0.2",
-        "com.utilities.rest": "1.1.0"
+        "com.utilities.rest": "1.2.2"
       },
       "url": "https://package.openupm.com"
     },
@@ -268,7 +268,7 @@
       "url": "https://package.openupm.com"
     },
     "com.utilities.rest": {
-      "version": "1.1.0",
+      "version": "1.2.2",
       "depth": 1,
       "source": "registry",
       "dependencies": {
