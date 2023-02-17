@@ -37,6 +37,18 @@ public class VoiceControllerWithPrompt : Singleton<VoiceControllerWithPrompt>
 
     private void OnFullTranscription(string transcript)
     {
+        var frame = objectToActOnWithVoice.parent.GetComponentInChildren<Frame>();
+
+        if (transcript.ToLower().Contains("clear image"))
+        {
+            if (frame != null)
+            {
+                frame.ClearImage();
+            }
+
+            return;
+        }
+
         var progress = objectToActOnWithVoice.parent.GetComponentInChildren<Progress>();
 
         if (progress != null)
@@ -44,13 +56,19 @@ public class VoiceControllerWithPrompt : Singleton<VoiceControllerWithPrompt>
             progress.StartProgress("Generating AI Image");
         }
 
-        ImageGenerator.Instance.GenerateImage(transcript, objectToActOnWithVoice, ImageSize.Small, OnImageGenerated);
-
-        var frame = objectToActOnWithVoice.parent.GetComponentInChildren<Frame>();
 
         if (frame != null)
         {
             frame.FramePrompt.text = transcript;
+
+            if (frame.Image == null)
+            {
+                ImageGenerator.Instance.GenerateImage(transcript, objectToActOnWithVoice, ImageSize.Small, OnImageGenerated);
+            }
+            else
+            {
+                ImageGenerator.Instance.GenerateImageEdit(transcript, objectToActOnWithVoice, frame.Image, frame.Mask, ImageSize.Small, OnImageGenerated);
+            }
         }
     }
 
@@ -67,7 +85,7 @@ public class VoiceControllerWithPrompt : Singleton<VoiceControllerWithPrompt>
 
         if (frame != null)
         {
-            frame.UpdateTexture(texture);
+            frame.UpdateImage(texture);
         }
     }
 

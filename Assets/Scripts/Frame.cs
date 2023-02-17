@@ -46,6 +46,11 @@ public class Frame : MonoBehaviour
 
     private XRRayInteractor activeInteractor;
 
+    public Texture2D Image { get; private set; }
+
+    // TODO to be created after done drawing
+    public Texture2D Mask { get; private set; }
+
     private void OnValidate()
     {
         if (framePrompt == null)
@@ -109,9 +114,16 @@ public class Frame : MonoBehaviour
         }
     }
 
-    public void UpdateTexture(Texture2D texture)
+    public void UpdateImage(Texture2D texture)
     {
-        materialInstance.SetTexture(mainTex, texture);
+        Image = texture;
+        materialInstance.SetTexture(mainTex, Image);
+    }
+
+    public void ClearImage()
+    {
+        Image = null;
+        materialInstance.SetTexture(mainTex, null);
     }
 
     private void OnHoverEntered(HoverEnterEventArgs hoverEnteredArgs)
