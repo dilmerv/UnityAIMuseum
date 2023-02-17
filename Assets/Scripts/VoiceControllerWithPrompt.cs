@@ -17,7 +17,7 @@ public class VoiceControllerWithPrompt : Singleton<VoiceControllerWithPrompt>
 
     private Transform objectToActOnWithVoice;
 
-    private void Awake()
+    private void OnEnable()
     {
         partialTranscriptText.text = string.Empty;
 
@@ -25,6 +25,14 @@ public class VoiceControllerWithPrompt : Singleton<VoiceControllerWithPrompt>
         appVoiceExperience.events.onPartialTranscription.AddListener(OnPartialTranscription);
         appVoiceExperience.events.OnRequestCreated.AddListener(OnRequestCreated);
         appVoiceExperience.events.OnRequestCompleted.AddListener(OnRequestCompleted);
+    }
+
+    private void OnDisable()
+    {
+        appVoiceExperience.events.OnFullTranscription.RemoveListener(OnFullTranscription);
+        appVoiceExperience.events.onPartialTranscription.RemoveListener(OnPartialTranscription);
+        appVoiceExperience.events.OnRequestCreated.RemoveListener(OnRequestCreated);
+        appVoiceExperience.events.OnRequestCompleted.RemoveListener(OnRequestCompleted);
     }
 
     private void OnFullTranscription(string transcript)

@@ -71,9 +71,13 @@ public class Frame : MonoBehaviour
 
     private void Awake()
     {
+        materialInstance = imageRenderer.material;
+    }
+
+    private void OnEnable()
+    {
         framePrompt.text = string.Empty;
         frameProgress.text = string.Empty;
-        materialInstance = imageRenderer.material;
         interactable.hoverEntered.AddListener(OnHoverEntered);
         interactable.hoverExited.AddListener(OnHoverExit);
     }
@@ -89,11 +93,14 @@ public class Frame : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         interactable.hoverEntered.RemoveListener(OnHoverEntered);
         interactable.hoverExited.RemoveListener(OnHoverExit);
+    }
 
+    private void OnDestroy()
+    {
         if (materialInstance != null)
         {
             Destroy(materialInstance);
