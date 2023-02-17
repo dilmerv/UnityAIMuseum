@@ -208,7 +208,7 @@ Transform:
   - {fileID: 4433173825195583207}
   - {fileID: 8372940829258238065}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4543464127912956241
 MonoBehaviour:
@@ -222,6 +222,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f25c43ec15ed7d4ba97cf86326ae8a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  imageSize: 0
+  imageRenderer: {fileID: 3635033973650609757}
   framePrompt: {fileID: 5178467932478794663}
   frameProgress: {fileID: 6642255370528480549}
 --- !u!114 &7225272855913271320
@@ -385,7 +387,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7faddc3d829987f4287b3b2f91625bbf, type: 2}
+  - {fileID: 2100000, guid: 346350ee9b5c5f240b0221bb98ff3882, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

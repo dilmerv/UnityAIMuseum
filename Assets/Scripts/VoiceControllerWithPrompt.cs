@@ -7,7 +7,6 @@ using UnityEngine;
 
 public class VoiceControllerWithPrompt : Singleton<VoiceControllerWithPrompt>
 {
-    private static readonly int mainTex = Shader.PropertyToID("_MainTex");
 
     [Header("Voice")]
     [SerializeField]
@@ -57,7 +56,12 @@ public class VoiceControllerWithPrompt : Singleton<VoiceControllerWithPrompt>
             progress.StopProgress();
         }
 
-        transformTarget.GetComponent<Renderer>().material.SetTexture(mainTex, texture);
+        var frame = objectToActOnWithVoice.parent.GetComponentInChildren<Frame>();
+
+        if (frame != null)
+        {
+            frame.UpdateTexture(texture);
+        }
     }
 
     private void OnPartialTranscription(string transcript)
