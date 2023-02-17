@@ -91,6 +91,9 @@ public class Frame : MonoBehaviour
 
     private void OnDestroy()
     {
+        interactable.hoverEntered.RemoveListener(OnHoverEntered);
+        interactable.hoverExited.RemoveListener(OnHoverExit);
+
         if (materialInstance != null)
         {
             Destroy(materialInstance);
